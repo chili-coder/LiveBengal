@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">Live Bengal</string>
+    <string name="live_tv">লাইভ টিভি</string>
+    <string name="live_redio">লাইভ রেডিও</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="yes">হ্যা</string>
+    <string name="no">না</string>
+    <string name="exit_msg">আপনি কি অ্যাপ থেকে বের হতে চান?</string>
+    <string name="open">open</string>
+    <string name="close">close</string>
+
+    <string name="admob_app_id">ca-app-pub-3940256099942544~3347511713</string>
+    <string name="admob_banner_id">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="admob_insta_id">ca-app-pub-3940256099942544/1033173712</string>
+    <string name="share">শেয়ার</string>
+    <string name="about">অ্যাপ সম্পর্কে</string>
+    <string name="login">এডমিন ফাংশন</string>
+    <string name="privacy">গোপনীয়তা নীতি</string>
+    <string name="rate">অ্যাপটিতে রেটিং দিন</string>
+    <string name="shre_app">অ্যাপটি শেয়ার করুন</string>
+</resources>
