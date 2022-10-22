@@ -23,8 +23,16 @@ import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.source.ProgressiveMediaSource;
+import com.google.android.exoplayer2.ui.PlayerView;
+import com.google.android.exoplayer2.upstream.DataSource;
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.util.Util;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
@@ -35,13 +43,15 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class RedioViewActivity extends AppCompatActivity {
 
-  private MediaPlayer mediaPlayer;
+
   private CircleImageView circleImageView;
   private TextView titleText,codeText;
   private ProgressDialog progressBar;
-    private AdView mAdView;
+  private AdView mAdView;
+  private PlayerView playerView;
+  private  SimpleExoPlayer simpleExoPlayer;
 
-  private ImageView pauseImage,playImage;
+
     // String radio_url = "http://sc-bb.1.fm:8017/;?listening-from-radio-garden=1601016386228";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,9 +61,8 @@ public class RedioViewActivity extends AppCompatActivity {
         circleImageView=findViewById(R.id.circleImageView);
         titleText=findViewById(R.id.fmTitle);
         codeText=findViewById(R.id.fmCode);
-        pauseImage=findViewById(R.id.imageViewPause);
-        playImage=findViewById(R.id.imageViewPlay);
 
+        playerView=findViewById(R.id.audioPlay);
 
         progressBar = new ProgressDialog(this);
         progressBar.setMessage("লোডিং হচ্ছে...");
@@ -130,67 +139,47 @@ roatedImage();
     private void radioPlay() {
         try {
 
+            Intent intent = getIntent();
+            String radio_url = intent.getStringExtra("url");
+            playerView.setControllerShowTimeoutMs(0);
+            playerView.setCameraDistance(30);
+           simpleExoPlayer =new SimpleExoPlayer.Builder(RedioViewActivity.this).build();
+            playerView.setPlayer(simpleExoPlayer);
+            DataSource.Factory dataSource = new DefaultDataSourceFactory(RedioViewActivity.this,
+                    Util.getUserAgent(RedioViewActivity.this,"app"));
+            MediaSource audioSource=new ProgressiveMediaSource.Factory(dataSource).createMediaSource(Uri.parse(radio_url));
+            simpleExoPlayer.prepare(audioSource);
+            simpleExoPlayer.setPlayWhenReady(true);
 
-
-           playImage.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    try {
-                        getWindow().setFormat(PixelFormat.TRANSLUCENT);
-                        Intent intent = getIntent();
-                        String radio_url = intent.getStringExtra("url");
-                        Uri uri = Uri.parse(radio_url);
-                        mediaPlayer=MediaPlayer.create(getApplicationContext(),uri);
-                        mediaPlayer.start();
-                    }catch (Exception e){
-
-                    }
-
-                    pauseImage.setVisibility(View.VISIBLE);
-                    playImage.setVisibility(View.GONE);
-
-                }
-            });
-
-            pauseImage.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    mediaPlayer.pause();
-                    pauseImage.setVisibility(View.GONE);
-                    playImage.setVisibility(View.VISIBLE);
-                }
-            });
-
-
-//
-//            mediaPlayer.setAudioAttributes(
-//                    new AudioAttributes.Builder()
-//                            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-//                            .setUsage(AudioAttributes.USAGE_MEDIA)
-//                            .build()
-//            );
-//            mediaPlayer.setDataSource(radio_url);
-//            mediaPlayer.prepare(); // might take long! (for buffering, etc)
-//            mediaPlayer.start();
 
         }catch (Exception e){
             progressBar.dismiss();
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        if (mediaPlayer != null) {
-            mediaPlayer.release();
-            mediaPlayer=null;
-        }
-        finish();
-    }
+
+
+
+
 
     @Override
     protected void onStart() {
         super.onStart();
         radioPlay();
     }
+
+    @Override
+    public void onBackPressed() {
+
+        this.finish();
+        super.onBackPressed();
+        simpleExoPlayer.pause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        simpleExoPlayer.pause();
+    }
+
 }

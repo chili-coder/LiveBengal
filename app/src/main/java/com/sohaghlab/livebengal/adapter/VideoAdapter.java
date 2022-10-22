@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.sohaghlab.livebengal.R;
+import com.sohaghlab.livebengal.VideoPlayActivity;
 import com.sohaghlab.livebengal.VideoViewActivity;
 import com.sohaghlab.livebengal.model.VideoModel;
 
@@ -55,12 +56,12 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.videoViewHol
             @Override
             public void onClick(View v) {
 
-                Intent intent = new Intent(context, VideoViewActivity.class);
+                Intent intent = new Intent(context, VideoPlayActivity.class);
                 intent.putExtra("url",currentItem.getUrl());
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
 
-//                Intent intent = new Intent(context, VideoViewActivity.class);
+//                Intent intent = new Intent(context, VideoPlayActivity.class);
 //                context.startActivity(intent);
 
             }
